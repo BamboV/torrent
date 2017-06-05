@@ -11,7 +11,7 @@ type Parser struct {
 	BaseURL string
 }
 
-func (p *Parser) parse(searchPhrase string) ([]torrent.DistributionLine, error) {
+func (p *Parser) Parse(searchPhrase string) ([]torrent.DistributionLine, error) {
 	url := p.BaseURL + "/search/" + searchPhrase
 
 	lines := []torrent.DistributionLine{}
@@ -42,6 +42,7 @@ func (p *Parser) parse(searchPhrase string) ([]torrent.DistributionLine, error) 
 			case 2:
 				line.TopicLink, _ = link.Attr("href")
 				line.Title = link.Text()
+				break
 			}
 		})
 
