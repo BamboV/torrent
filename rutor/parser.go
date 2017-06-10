@@ -3,6 +3,7 @@ package rutor
 import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/bamboV/torrent"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -11,10 +12,10 @@ type Parser struct {
 	BaseURL string
 }
 
-func (p *Parser) Parse(searchPhrase string) ([]torrent.DistributionLine, error) {
+func (p *Parser) Parse(searchPhrase string) ([]torrent.Distribution, error) {
 	url := p.BaseURL + "/search/" + searchPhrase
 
-	lines := []torrent.DistributionLine{}
+	lines := []torrent.Distribution{}
 
 	document, err := goquery.NewDocument(url)
 
@@ -28,8 +29,10 @@ func (p *Parser) Parse(searchPhrase string) ([]torrent.DistributionLine, error) 
 			return
 		}
 		col := selection.Find("td")
-		line := torrent.DistributionLine{}
-		secondCol := col.First().Next()
+		line := torrent.Distribution{}
+		firstCol := col.First()
+		line.LastUpdated = firstCol.Text()
+		secondCol := firstCol.Next()
 		secondCol.Find("a").Each(func(i int, link *goquery.Selection) {
 			switch i {
 			case 0:
@@ -52,4 +55,41 @@ func (p *Parser) Parse(searchPhrase string) ([]torrent.DistributionLine, error) 
 	})
 
 	return lines, nil
+}
+
+func (p *Parser) ParsePage(id int) torrent.Distribution {
+	url := p.BaseURL + "/torrent/" + strconv.Itoa(id)
+	line := torrent.Distribution{
+		Id: id,
+	}
+
+	document, _ := goquery.NewDocument(url)
+
+	content := document.Find("div#content")
+
+	line.MagnetLink, _ = content.
+		Find("div#download").
+		Find("a").
+		First().
+		Attr("href")
+
+	details := content.Find("table#details").Find("tr")
+
+	details.Each(func(i int, sel *goquery.Selection) {
+		first := sel.Find("td").First()
+		if first.Text() == "Добавлен" {
+			dateString := first.Next().Text()
+			r := regexp.MustCompile("\\d+-\\d+-\\d+ \\d+:\\d+:\\d+")
+			line.LastUpdated = r.FindString(dateString)
+		}
+		if first.Text() == "Размер" {
+			line.Size = first.Next().Text()
+		}
+	})
+
+	line.Title = document.Find("div#all").Find("h1").Text()
+	line.TopicLink = "/download/" + strconv.Itoa(id)
+
+	return line
+
 }
