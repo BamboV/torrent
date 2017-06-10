@@ -76,20 +76,25 @@ func (p *Parser) ParsePage(id int) torrent.Distribution {
 	details := content.Find("table#details").Find("tr")
 
 	details.Each(func(i int, sel *goquery.Selection) {
-		first := sel.Find("td").First()
-		if first.Text() == "Добавлен" {
+		first := sel.Find("td.header")
+		switch first.Text() {
+		case "Добавлен":
 			dateString := first.Next().Text()
 			r := regexp.MustCompile("\\d+-\\d+-\\d+ \\d+:\\d+:\\d+")
 			line.LastUpdated = r.FindString(dateString)
-		}
-		if first.Text() == "Размер" {
+			break
+		case "Размер":
 			line.Size = first.Next().Text()
+			break
+
 		}
+		//println(i, line.Size)
 	})
 
 	line.Title = document.Find("div#all").Find("h1").Text()
-	line.TopicLink = "/download/" + strconv.Itoa(id)
-
+	line.TopicLink = "/torrent/" + strconv.Itoa(id)
+	line.DownloadLink = "/download/" + strconv.Itoa(id)
+	//line.LastUpdated = "10"
 	return line
 
 }
