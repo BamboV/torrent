@@ -96,5 +96,4 @@ func (p *Parser) ParsePage(id int) torrent.Distribution {
 	line.DownloadLink = "/download/" + strconv.Itoa(id)
 	//line.LastUpdated = "10"
 	return line
-
 }
