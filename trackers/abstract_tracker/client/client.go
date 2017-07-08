@@ -22,21 +22,22 @@ func NewClient(client http.Client) TrackerClient {
 func (t *TrackerClient) GetTorrent(trackerURL string, id int) (torrent.Distribution, error) {
 	resp, err := t.client.Get(trackerURL + "/distributions/" + strconv.Itoa(int(id)))
 
+	tr := torrent.Distribution{}
+
 	if err != nil {
-		return nil, err
+		return tr, err
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
-		return nil, err
+		return tr, err
 	}
 
-	tr := torrent.Distribution{}
 	err = json.Unmarshal(body, &tr)
 
 	if err != nil {
-		return nil, err
+		return tr, err
 
 	}
 
@@ -70,20 +71,20 @@ func (t *TrackerClient) GetOriginalTrackerUrl(trackerURL string) (string, error)
 	resp, err := t.client.Get(trackerURL + "/url")
 
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	result := abstract_tracker.UrlResponse{}
 	err = json.Unmarshal(body, &result)
 
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	return result.Url, nil
