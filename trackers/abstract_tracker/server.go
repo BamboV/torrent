@@ -45,5 +45,9 @@ func (s *Server) Start(trackerURL string, tracker Tracker) {
 		w.Write(str)
 	})
 
-	http.ListenAndServe("/", mux)
+	err := http.ListenAndServe(":80", mux)
+
+	if err != nil {
+		panic(err)
+	}
 }
