@@ -9,6 +9,12 @@ type Client struct {
 	client transmission.TransmissionClient
 }
 
+func NewClient(host string, login string, password string) Client {
+	return Client{
+		client: transmission.New(host, login, password),
+	}
+}
+
 func (c Client) HandleMagnet(magnet string) abstract_torrent_client.Response {
 	cmd, _ := transmission.NewAddCmdByMagnet(magnet)
 	_, err := c.client.ExecuteAddCommand(cmd)
