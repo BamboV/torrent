@@ -13,7 +13,7 @@ type magnet struct {
 }
 
 func (server *Server) Start(client TorrentClient) {
-	http.HandleFunc("/magnet/", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/magnet", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
 			decoder := json.NewDecoder(r.Body)
 			magnet := magnet{}
