@@ -20,7 +20,7 @@ func NewClient(client http.Client) TrackerClient {
 }
 
 func (t *TrackerClient) GetTorrent(trackerURL string, id int) (torrent.Distribution, error) {
-	resp, err := t.client.Get(trackerURL + ":8001/distributions/" + strconv.Itoa(int(id)))
+	resp, err := t.client.Get(trackerURL + "/distributions/" + strconv.Itoa(int(id)))
 
 	tr := torrent.Distribution{}
 
@@ -45,7 +45,7 @@ func (t *TrackerClient) GetTorrent(trackerURL string, id int) (torrent.Distribut
 }
 
 func (t *TrackerClient) Search(trackerURL string, phrase string) ([]torrent.Distribution, error) {
-	resp, err := t.client.Get(trackerURL + ":8001/distributions?phrase=" + phrase)
+	resp, err := t.client.Get(trackerURL + "/distributions?phrase=" + phrase)
 
 	if err != nil {
 		print(err.Error())
