@@ -20,7 +20,7 @@ func NewClient(client http.Client, clientURL string) Client {
 
 func (c *Client) DownloadByMagnet(magnet string) bool {
 	var jsonStr = []byte(fmt.Sprintf(`{"magnet":"%v"}`, magnet))
-	resp, err := c.client.Post(c.clientURL, "application/json", bytes.NewBuffer(jsonStr))
+	resp, err := c.client.Post(c.clientURL+"/magnet", "application/json", bytes.NewBuffer(jsonStr))
 
 	if err != nil {
 		return false
