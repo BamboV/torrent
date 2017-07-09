@@ -1,11 +1,11 @@
 package torrent
 
 type Distribution struct {
-	Id           int
-	Title        string
-	Size         string
-	MagnetLink   string
-	DownloadLink string
-	TopicLink    string
-	LastUpdated  string
+	Id           int    `json:"id"`
+	Title        string `json:"title"`
+	Size         string `json:"size"`
+	MagnetLink   string `json:"magnetLink"`
+	DownloadLink string `json:"downloadLink"`
+	TopicLink    string `json:"topicLink"`
+	LastUpdated  string `json:"lastUpdated"`
 }
